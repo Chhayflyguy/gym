@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-200 leading-tight">Shared Schedules</h2>
-            <a href="{{ route('schedules.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+            <a href="{{ route('schedules.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded text-sm">
                 Create New Schedule
             </a>
         </div>
@@ -26,12 +26,12 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="space-y-6">
                     @forelse ($schedules as $schedule)
-                        <div class="bg-gray-800 p-6 rounded-lg shadow-md flex justify-between items-center">
-                            <div>
+                        <div class="bg-gray-800 p-6 rounded-lg shadow-md flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
+                            <div class="flex-grow">
                                 <h3 class="text-2xl font-bold text-white">{{ $schedule->name }}</h3>
                                 <p class="text-gray-400">Created by: {{ $schedule->user->name }}</p>
                             </div>
-                            <div class="flex space-x-2">
+                            <div class="flex space-x-2 flex-shrink-0">
                                 <button @click="viewSchedule({{ $schedule->id }})" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">View</button>
                                 @canany(['update', 'delete'], $schedule)
                                     <a href="{{ route('schedules.edit', $schedule) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">Edit</a>
@@ -52,7 +52,6 @@
                 <div class="mt-8">{{ $schedules->links() }}</div>
             </div>
         </div>
-
         <div x-show="isOpen" @click.away="isOpen = false" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
             <div class="bg-gray-800 text-white rounded-lg shadow-xl p-8 w-full max-w-2xl">
                 <h2 class="text-3xl font-bold mb-4" x-text="schedule.name"></h2>

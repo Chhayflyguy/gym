@@ -1,11 +1,10 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-200 leading-tight">
-            {{ __("Today's Workout") }} - {{ now()->format('l, F j, Y') }}
+            {{ __("Today's Workout") }} &mdash; {{ now()->format('l, F j, Y') }}
         </h2>
     </x-slot>
 
-    {{-- The entire Alpine component is now defined directly in x-data --}}
     <div x-data="{
         isModalOpen: false,
         newExercise: { name: '', body_part: '' },
@@ -30,14 +29,16 @@
         }
     }">
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- The container is now narrower (max-w-4xl) for a better single-column look --}}
+            <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
                 @if (session('success'))
                     <div class="bg-green-500 text-white font-bold rounded-lg px-4 py-3 mb-4" role="alert">
                         <p>{{ session('success') }}</p>
                     </div>
                 @endif
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                {{-- THIS IS THE KEY CHANGE: The grid is now always a single, vertical column --}}
+                <div class="flex flex-col gap-8">
                     <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                         <h3 class="text-lg font-medium text-white mb-4">Log a New Lift</h3>
                         <form method="POST" action="{{ route('workout-logs.store') }}">
@@ -74,22 +75,41 @@
                         </form>
                     </div>
 
-                    <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                        <h3 class="text-lg font-medium text-white mb-4">Logged Today</h3>
-                        <div class="space-y-4">
-                            @forelse ($logsToday as $log)
-                                <div class="bg-gray-700 p-4 rounded-lg flex justify-between items-center">
-                                    <div>
-                                        <p class="font-bold text-white">{{ $log->exercise->name }}</p>
-                                        <p class="text-sm text-gray-400">Set {{ $log->set_number }}</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="font-semibold text-lg text-white">{{ $log->weight_kg }} kg</p>
-                                        <p class="text-sm text-gray-400">{{ $log->reps }} reps</p>
+                    <div class="bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                        <div class="p-6">
+                           <h3 class="text-lg font-medium text-white">Logged Today</h3>
+                        </div>
+                        <div x-data="{ openExercise: '' }" class="border-t border-gray-700">
+                             @forelse ($logsToday->groupBy('exercise.name') as $exerciseName => $sets)
+                                @php
+                                    $totalSets = $sets->count();
+                                    $totalVolume = $sets->sum(fn($s) => $s->weight_kg * $s->reps);
+                                @endphp
+                                <div class="border-b border-gray-700 last:border-b-0">
+                                    <button @click="openExercise = (openExercise === '{{ $exerciseName }}' ? '' : '{{ $exerciseName }}')" class="w-full flex justify-between items-center p-6 text-left hover:bg-gray-700/50 focus:outline-none">
+                                        <div class="flex-grow">
+                                            <h4 class="text-lg font-semibold text-white">{{ $exerciseName }}</h4>
+                                            <p class="text-sm text-gray-400">
+                                                {{ $totalSets }} sets &bull; {{ number_format($totalVolume, 0) }} kg total volume
+                                            </p>
+                                        </div>
+                                        <div class="flex-shrink-0 ml-4">
+                                            <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-300" :class="{ 'rotate-180': openExercise === '{{ $exerciseName }}' }" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                                        </div>
+                                    </button>
+                                    <div x-show="openExercise === '{{ $exerciseName }}'" x-transition class="px-6 pb-4 bg-gray-900/50">
+                                        <ul class="divide-y divide-gray-700 pt-4">
+                                            @foreach ($sets->sortBy('set_number') as $set)
+                                                <li class="py-2 flex justify-between items-center text-sm">
+                                                    <span class="text-gray-400">Set {{ $set->set_number }}</span>
+                                                    <span class="font-mono text-gray-200">{{ $set->weight_kg }} kg &times; {{ $set->reps }} reps</span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
                                     </div>
                                 </div>
                             @empty
-                                <div class="bg-gray-700 p-4 rounded-lg text-center text-gray-400">
+                                <div class="p-6 text-center text-gray-400">
                                     <p>No lifts logged for today yet. Let's get to work! 💪</p>
                                 </div>
                             @endforelse
@@ -98,7 +118,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div x-show="isModalOpen" @click.away="isModalOpen = false" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
             <div class="bg-gray-800 text-white rounded-lg shadow-xl p-8 w-full max-w-md">
                 <h2 class="text-2xl font-bold mb-4">Add a New Exercise</h2>

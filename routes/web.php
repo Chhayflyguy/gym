@@ -6,6 +6,7 @@ use App\Http\Controllers\WorkoutLogController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ExerciseController;
+use App\Http\Controllers\HistoryController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -32,6 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/schedules/{schedule}', [ScheduleController::class, 'show'])->name('schedules.show');
 
     Route::post('/exercises', [ExerciseController::class, 'store'])->name('exercises.store');
+
+    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 
 });
 

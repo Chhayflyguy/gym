@@ -47,6 +47,14 @@ class WorkoutLog extends Model
         'reps',
         'set_number',
     ];
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'log_date' => 'date', // Add this line
+    ];
 
     public function user() { 
         return $this->belongsTo(User::class); 
