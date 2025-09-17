@@ -21,6 +21,15 @@
                     <x-nav-link :href="route('leaderboard.index')" :active="request()->routeIs('leaderboard.index')">
                         {{ __('Leaderboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('progress.index')" :active="request()->routeIs('progress.index')">
+                        {{ __('Progress') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('achievements.index')" :active="request()->routeIs('achievements.index')">
+                        {{ __('Achievements') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
+                        {{ __('Members') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -73,6 +82,16 @@
             <x-responsive-nav-link :href="route('leaderboard.index')" :active="request()->routeIs('leaderboard.index')">
                 {{ __('Leaderboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('progress.index')" :active="request()->routeIs('progress.index')">
+                {{ __('Progress') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('achievements.index')" :active="request()->routeIs('achievements.index')">
+                {{ __('Achievements') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('members.index')" :active="request()->routeIs('members.index')">
+                 {{ __('Members') }}
+             </x-responsive-nav-link>
+            
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-600">

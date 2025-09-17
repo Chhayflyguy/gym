@@ -77,4 +77,11 @@ class User extends Authenticatable
     }
     public function workoutLogs() { return $this->hasMany(WorkoutLog::class); }
     public function schedules() { return $this->hasMany(Schedule::class); }
+    public function achievements() {
+        return $this->belongsToMany(Achievement::class, 'user_achievements')->withTimestamps();
+    }
+    public function personalRecords()
+    {
+        return $this->hasMany(PersonalRecord::class);
+    }
 }

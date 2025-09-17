@@ -7,6 +7,9 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\AchievementController;
+use App\Http\Controllers\MemberController; 
 Route::get('/', function () {
     return view('welcome');
 });
@@ -22,6 +25,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [WorkoutLogController::class, 'index'])->name('dashboard');
     Route::post('/workout-logs', [WorkoutLogController::class, 'store'])->name('workout-logs.store');
+    Route::put('/workout-logs/{workoutLog}', [WorkoutLogController::class, 'update'])->name('workout-logs.update');
+    Route::delete('/workout-logs/{workoutLog}', [WorkoutLogController::class, 'destroy'])->name('workout-logs.destroy');
 
     Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
     Route::post('/schedule', [ScheduleController::class, 'store'])->name('schedule.store');
@@ -35,6 +40,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/exercises', [ExerciseController::class, 'store'])->name('exercises.store');
 
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+
+    Route::get('/progress', [ProgressController::class, 'index'])->name('progress.index');
+    Route::get('/progress/chart-data/{exercise}', [ProgressController::class, 'chartData'])->name('progress.chart-data');
+
+    Route::get('/achievements', [AchievementController::class, 'index'])->name('achievements.index');
+    
+    Route::get('/members', [MemberController::class, 'index'])->name('members.index');
+    Route::get('/members/{user}', [MemberController::class, 'show'])->name('members.show');
 
 });
 

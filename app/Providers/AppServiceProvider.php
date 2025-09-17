@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use App\Models\WorkoutLog; // Add this line
+use App\Observers\WorkoutLogObserver; // Add this line
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
+
 
     /**
      * Bootstrap any application services.
